@@ -23,6 +23,7 @@ def write_csv(data):
         writer = csv.writer(f)
         writer.writerow( (data['title'], data['price'], data['metro'], data['url']) )
 
+
 def get_page_data(html):
     soup = BeautifulSoup(html, 'lxml')
     ads = soup.find('div', class_='catalog-list').find_all('div', class_='item_table')
@@ -31,27 +32,29 @@ def get_page_data(html):
         try:
             title = ad.find('div', class_='description').find('h3').text.strip()
         except:
-            title = ''
+            title = 'title'
         
         try:
             url = ad.find('div', class_='description').find('h3').find('a').get('href')
         except:
-            url = ''
+            url = 'url'
         
         try:
             price = ad.find('div', class_='about').text.strip()
         except:
-            price = ''
+            price = 'price'
 
         try:
             metro = ad.find('p', class_='address').text.strip()
         except:
-            metro = ''
+            metro = 'metro'
 
         data = {'title': title, 
                 'url': url, 
                 'price': price, 
                 'metro': metro}
+
+        #print(data)
 
         write_csv(data)
 
