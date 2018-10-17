@@ -1,6 +1,8 @@
+import csv
+
 import requests
 from bs4 import BeautifulSoup
-import csv
+import codecs
 
 #https://www.avito.ru/novosibirsk/kvartiry?p=100
 
@@ -19,7 +21,7 @@ def get_total_pages(html):
 
 #Проблемы с кодировкой
 def write_csv(data):
-    with open('avito.csv', 'a', encoding='utf-8') as f:
+    with codecs.open('avito.csv', 'a', 'utf-8') as f:
         writer = csv.writer(f)
         writer.writerow( (data['title'], data['price'], data['metro'], data['url']) )
 
@@ -40,7 +42,7 @@ def get_page_data(html):
             url = 'url'
         
         try:
-            price = ad.find('div', class_='about').text.strip()
+            price = str(ad.find('div', class_='about').find('span', class_='price').get('content')).strip()
         except:
             price = 'price'
 
@@ -53,9 +55,6 @@ def get_page_data(html):
                 'url': url, 
                 'price': price, 
                 'metro': metro}
-
-        #print(data)
-
         write_csv(data)
 
 def main():
